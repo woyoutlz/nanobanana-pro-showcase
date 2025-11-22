@@ -1,0 +1,38 @@
+[
+  {
+    "prompt": "Translate the dialogue in the comic into Japanese.",
+    "imageurls": [
+      "https://blog-static.felo.ai/Translate_the_dialogue_in_the_comic_into_Japanese_7540f1d875.png"
+    ]
+  },
+  {
+    "prompt": "Create an artistic collage-style birthday card that combines paper textures, ripped edges, cut-out photos, and hand-drawn doodles. Mix soft pastel backgrounds with dynamic overlapping shapes. Text on Card: “Every piece of life makes you special, have a colorful birthday!",
+    "imageurls": [
+      "https://blog-static.felo.ai/Create_an_artistic_collage_style_birthday_card_that_combines_paper_textures_ripped_edges_cut_out_p_680a81f63a.png"
+    ]
+  },
+  {
+    "prompt": "Create a fashion product collage on a brown corkboard based on this outfit.",
+    "imageurls": [
+      "https://blog-static.felo.ai/Create_a_fashion_product_collage_on_a_brown_corkboard_based_on_this_outfit_Regenerate_17dce697d3.png"
+    ]
+  },
+  {
+    "prompt": "Create an image of a retro movie poster.",
+    "imageurls": [
+      "https://blog-static.felo.ai/Create_an_image_of_a_retro_movie_poster_84304ccf05.png"
+    ]
+  },
+  {
+    "prompt": "Generate the holiday photo of this person through the ages up to 80 years old",
+    "imageurls": [
+      "https://blog-static.felo.ai/Generate_the_holiday_photo_of_this_person_through_the_ages_up_to_80_years_old_Regenerate_51a4a926e7.png"
+    ]
+  },
+  {
+    "prompt": "Please generate a nine-panel layout of this character’s avatar, each with a different hairstyle.",
+    "imageurls": [
+      "https://blog-static.felo.ai/Please_generate_a_nine_panel_layout_of_this_character_s_avatar_each_with_a_different_hairstyle_5dff69f780.png"
+    ]
+  }
+]

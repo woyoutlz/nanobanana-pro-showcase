@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 图片画廊 - 提示词复制</title>
+    <style>
+        /* 1. 基础样式与字体 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 30px 20px;
+            background-color: #e9ecef; /* 柔和浅灰色背景 */
+            line-height: 1.6;
+            color: #343a40;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #212529;
+        }
+
+        /* 2. Masonry 瀑布流布局 (CSS Columns 实现) */
+        .gallery-grid {
+            column-count: 3; /* 默认三列 */
+            column-gap: 20px;
+            padding: 0 10px;
+        }
+
+        /* 响应式调整列数 */
+        @media (max-width: 1200px) {
+            .gallery-grid {
+                column-count: 2; /* 中等屏幕两列 */
+            }
+        }
+        @media (max-width: 768px) {
+            .gallery-grid {
+                column-count: 1; /* 小屏幕一列 */
+            }
+        }
+
+        /* 3. 卡片样式 */
+        .image-card {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px; /* 卡片之间的间距 */
+            break-inside: avoid-column; /* 防止卡片在列中被分割 */
+            padding: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+        .image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 4. 图片容器与图片 */
+        .image-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            border: 1px solid #f8f9fa;
+        }
+        .image-container img:hover {
+            opacity: 0.95;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+        }
+
+        /* 5. 提示词显示优化 (无需滚动条) */
+        .prompt-display {
+            padding: 10px 5px 0 5px;
+            font-size: 13px; /* 减小字体以容纳更多内容 */
+            color: #5a6268;
+            border-top: 1px dashed #ced4da;
+        }
+        .prompt-display pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 5px 0 0 0;
+            padding: 0;
+            font-size: 13px; /* 保持一致 */
+            background: none;
+            border: none;
+        }
+        .prompt-display strong {
+            color: #495057;
+        }
+        
+        /* 6. 复制提示信息 */
+        .copy-info {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #007bff; /* 蓝色提示背景 */
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .copy-info.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>✨ Nanobanana Pro 图片画廊</h1>
+        <p>点击任意图片即可复制完整的 **提示词 (Prompt)**。</p>
+    </div>
+
+    <div class="gallery-grid" id="gallery-grid">
+        </div>
+
+    <script>
+        // 配置：在此数组中添加您要加载的所有 JSON 文件名
+        const DATA_SOURCES = ['1.json', '2.json']; 
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGalleryData();
+        });
+
+        /**
+         * 加载所有配置的 JSON 数据源并合并渲染
+         */
+        async function loadGalleryData() {
+            const grid = document.getElementById('gallery-grid');
+            try {
+                // 1. 创建所有 fetch 承诺
+                const fetchPromises = DATA_SOURCES.map(source => 
+                    fetch(source).then(response => {
+                        if (!response.ok) {
+                            // 即使某个文件失败，也继续处理，但记录错误
+                            console.warn(`无法加载文件: ${source}. Status: ${response.status}`);
+                            return []; // 返回空数组，以便 Promise.all 能够继续
+                        }
+                        return response.json();
+                    })
+                );
+
+                // 2. 并行等待所有承诺完成
+                const allDataArrays = await Promise.all(fetchPromises);
+                
+                // 3. 将所有数组合并为一个完整的画廊数据数组
+
+                const allGalleryData = allDataArrays.flat(); 
+                // 存储已见过的 prompt
+                const seenPrompts = new Set();
+                
+                // 去重后的数据
+                const uniqueGalleryData = allGalleryData.filter(item => {
+                    // 检查 item 中是否有 prompt 字段
+                    if (item && item.prompt) {
+                        const prompt = item.prompt.trim();
+                        // 如果 prompt 之前没见过，则保留该 item，并将 prompt 记录下来
+                        if (!seenPrompts.has(prompt)) {
+                            seenPrompts.add(prompt);
+                            return true;
+                        }
+                    }
+                    // 默认不保留没有 prompt 字段或 prompt 重复的 item
+                    return false;
+                });
+
+                if (uniqueGalleryData.length === 0) {
+                     grid.innerHTML = '<p style="text-align: center; color: #6c757d;">没有可用的画廊数据。</p>';
+                } else {
+                    renderGallery(uniqueGalleryData);
+                }
+                
+            } catch (error) {
+                console.error("加载画廊数据失败:", error);
+                grid.innerHTML = 
+                    '<p style="text-align: center; color: red;">加载数据时发生致命错误。请检查 console。</p>';
+            }
+        }
+
+        /**
+         * 渲染画廊网格
+         * @param {Array<Object>} data - 包含 {prompt, imageurls} 的数组
+         */
+        function renderGallery(data) {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = ''; // 清空现有内容
+
+            data.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.classList.add('image-card');
+                
+                // 使用唯一的 ID 来确保 copy-info 元素可以被找到和控制
+                const copyInfoId = `copy-info-${index}`;
+
+                const imagesHtml = item.imageurls.map(url => `
+                    <img src="${escapeHtml(url)}" 
+                         alt="AI Generated Image" 
+                         onclick="copyPrompt(this, '${copyInfoId}')">
+                `).join('');
+
+                const cardHtml = `
+                    <div class="image-container" data-prompt="${escapeHtml(item.prompt)}">
+                        <div id="${copyInfoId}" class="copy-info">✅ 已复制提示词!</div>
+                        ${imagesHtml}
+                    </div>
+                    <div class="prompt-display">
+                        <strong>Prompt:</strong>
+                        <pre>${escapeHtml(item.prompt)}</pre>
+                    </div>
+                `;
+                
+                card.innerHTML = cardHtml;
+                grid.appendChild(card);
+            });
+        }
+
+        /**
+         * 复制提示词到剪贴板并显示通知
+         * @param {HTMLElement} imageElement - 被点击的图片元素
+         * @param {string} copyInfoId - 对应提示信息元素的 ID
+         */
+        function copyPrompt(imageElement, copyInfoId) {
+            // 查找最近的 .image-card，然后在其内部查找 .image-container 来获取 data-prompt
+            const card = imageElement.closest('.image-card');
+            const prompt = card.querySelector('.image-container').getAttribute('data-prompt');
+            const copyInfoElement = document.getElementById(copyInfoId);
+
+            navigator.clipboard.writeText(prompt)
+                .then(() => {
+                    // 显示复制成功的提示
+                    copyInfoElement.classList.add('show');
+                    // 确保在 1.5 秒后隐藏
+                    setTimeout(() => {
+                        copyInfoElement.classList.remove('show');
+                    }, 1500);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    alert('复制提示词失败，请手动复制：\n' + prompt);
+                });
+        }
+        
+        /**
+         * HTML转义函数，防止XSS和属性值错误
+         * @param {string} str - 待转义的字符串
+         * @returns {string} 转义后的字符串
+         */
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;');
+        }
+    </script>
+
+</body>
+</html>
