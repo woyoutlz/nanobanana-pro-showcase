@@ -35,7 +35,11 @@
         }
         @media (max-width: 768px) {
             .gallery-grid {
-                column-count: 1; /* 小屏幕一列 */
+                column-count: 2; /* 移动端改为两列 */
+                column-gap: 10px; /* 减小列间距 */
+            }
+            body {
+                padding: 15px 5px; /* 减小页面内边距，给图片更多空间 */
             }
         }
 

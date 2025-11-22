@@ -108,6 +108,29 @@
             gap: 16px;
         }
 
+        /* 移动端适配：类似相册的5列密集视图 */
+        @media (max-width: 768px) {
+            .pg-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 2px;
+            }
+            .pg-container {
+                padding: 60px 2px 20px 2px; /* 减小左右边距 */
+            }
+            .pg-item {
+                border-radius: 0; /* 密集视图去除圆角 */
+                border-width: 0; /* 去除边框以节省空间 */
+            }
+            .pg-item:hover {
+                transform: none; /* 移动端取消悬停放大 */
+                z-index: 0;
+            }
+            .pg-item-idx {
+                font-size: 9px;
+                padding: 1px 3px;
+            }
+        }
+
         .pg-item {
             position: relative;
             aspect-ratio: 1;
