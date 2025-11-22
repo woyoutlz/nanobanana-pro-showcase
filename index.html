@@ -169,6 +169,31 @@
         .modal-close:hover {
             color: #ff6b6b;
         }
+
+        /* 9. 筛选控件样式 */
+        .filter-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            color: #495057;
+            background-color: white;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .filter-select:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -184,6 +209,13 @@
     <div class="header">
         <h1>✨ Nanobanana Pro 图片画廊</h1>
         <p>点击任意图片即可复制完整的 **提示词 (Prompt)**。</p>
+        
+        <div class="filter-container">
+            <label for="source-select">选择展示源：</label>
+            <select id="source-select" class="filter-select">
+                <option value="all">全部展示 (All)</option>
+            </select>
+        </div>
     </div>
 
     <div class="gallery-grid" id="gallery-grid">
@@ -201,62 +233,100 @@
         // 配置：在此数组中添加您要加载的所有 JSON 文件名
         const DATA_SOURCES = ['1.json', '2.json','3.json','4.json']; 
         
+        // 缓存已加载的数据
+        let cachedData = {};
+
         document.addEventListener('DOMContentLoaded', () => {
-            loadGalleryData();
+            initGallery();
         });
 
         /**
-         * 加载所有配置的 JSON 数据源并合并渲染
+         * 初始化画廊：加载数据并绑定事件
+         */
+        async function initGallery() {
+            await loadGalleryData();
+            
+            // 初始化下拉菜单
+            const select = document.getElementById('source-select');
+            DATA_SOURCES.forEach(source => {
+                const option = document.createElement('option');
+                option.value = source;
+                option.textContent = source;
+                select.appendChild(option);
+            });
+
+            // 绑定筛选事件
+            select.addEventListener('change', (e) => {
+                renderFromSource(e.target.value);
+            });
+
+            // 默认渲染所有
+            renderFromSource('all');
+        }
+
+        /**
+         * 加载所有配置的 JSON 数据源
          */
         async function loadGalleryData() {
             const grid = document.getElementById('gallery-grid');
             try {
-                // 1. 创建所有 fetch 承诺
                 const fetchPromises = DATA_SOURCES.map(source => 
                     fetch(source).then(response => {
                         if (!response.ok) {
-                            // 即使某个文件失败，也继续处理，但记录错误
                             console.warn(`无法加载文件: ${source}. Status: ${response.status}`);
-                            return []; // 返回空数组，以便 Promise.all 能够继续
+                            return []; 
                         }
                         return response.json();
                     })
                 );
 
-                // 2. 并行等待所有承诺完成
                 const allDataArrays = await Promise.all(fetchPromises);
                 
-                // 3. 将所有数组合并为一个完整的画廊数据数组
-
-                const allGalleryData = allDataArrays.flat(); 
-                // 存储已见过的 prompt
-                const seenPrompts = new Set();
-                
-                // 去重后的数据
-                const uniqueGalleryData = allGalleryData.filter(item => {
-                    // 检查 item 中是否有 prompt 字段
-                    if (item && item.prompt) {
-                        const prompt = item.prompt.trim();
-                        // 如果 prompt 之前没见过，则保留该 item，并将 prompt 记录下来
-                        if (!seenPrompts.has(prompt)) {
-                            seenPrompts.add(prompt);
-                            return true;
-                        }
-                    }
-                    // 默认不保留没有 prompt 字段或 prompt 重复的 item
-                    return false;
+                // 将数据存入缓存
+                DATA_SOURCES.forEach((source, index) => {
+                    cachedData[source] = allDataArrays[index];
                 });
 
-                if (uniqueGalleryData.length === 0) {
-                     grid.innerHTML = '<p style="text-align: center; color: #6c757d;">没有可用的画廊数据。</p>';
-                } else {
-                    renderGallery(uniqueGalleryData);
-                }
-                
             } catch (error) {
                 console.error("加载画廊数据失败:", error);
-                grid.innerHTML = 
-                    '<p style="text-align: center; color: red;">加载数据时发生致命错误。请检查 console。</p>';
+                grid.innerHTML = '<p style="text-align: center; color: red;">加载数据时发生致命错误。请检查 console。</p>';
+            }
+        }
+
+        /**
+         * 根据选择的源渲染数据
+         * @param {string} source - 'all' 或具体的 json 文件名
+         */
+        function renderFromSource(source) {
+            const grid = document.getElementById('gallery-grid');
+            let dataToRender = [];
+
+            if (source === 'all') {
+                // 合并所有数据
+                Object.values(cachedData).forEach(arr => {
+                    dataToRender = dataToRender.concat(arr);
+                });
+            } else {
+                dataToRender = cachedData[source] || [];
+            }
+
+            // 去重逻辑
+            const seenPrompts = new Set();
+            const uniqueGalleryData = dataToRender.filter(item => {
+                if (item && item.prompt) {
+                    const prompt = item.prompt.trim();
+                    if (!seenPrompts.has(prompt)) {
+                        seenPrompts.add(prompt);
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            if (uniqueGalleryData.length === 0) {
+                 grid.innerHTML = '<p style="text-align: center; color: #6c757d;">该选择下没有可用的画廊数据。</p>';
+            } else {
+                renderGallery(uniqueGalleryData);
             }
         }
 
