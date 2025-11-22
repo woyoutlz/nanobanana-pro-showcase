@@ -29,6 +29,15 @@
             align-items: center;
             justify-content: center;
         }
+        @media (max-width: 768px) {
+            #pg-btn {
+                bottom: 15px;
+                right: 15px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
         #pg-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
@@ -63,6 +72,11 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 40px 20px;
+        }
+        @media (max-width: 768px) {
+            .pg-container {
+                padding: 60px 0 20px 0; /* 移动端最小化padding */
+            }
         }
 
         .pg-header {
@@ -112,14 +126,15 @@
         @media (max-width: 768px) {
             .pg-grid {
                 grid-template-columns: repeat(5, 1fr);
-                gap: 2px;
+                gap: 0px; /* 完全去除gap */
             }
             .pg-container {
-                padding: 60px 2px 20px 2px; /* 减小左右边距 */
+                padding: 60px 0 20px 0; /* 减小左右边距 */
             }
             .pg-item {
                 border-radius: 0; /* 密集视图去除圆角 */
                 border-width: 0; /* 去除边框以节省空间 */
+                margin: 0; /* 去除margin */
             }
             .pg-item:hover {
                 transform: none; /* 移动端取消悬停放大 */

@@ -14,10 +14,29 @@
             line-height: 1.6;
             color: #343a40;
         }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 0 0 0; /* 移动端最小化内边距 */
+            }
+        }
         .header {
             text-align: center;
             margin-bottom: 50px;
             color: #212529;
+        }
+        @media (max-width: 768px) {
+            .header {
+                margin-bottom: 15px;
+                padding: 10px 5px 0 5px;
+            }
+            .header h1 {
+                margin: 5px 0;
+                font-size: 18px;
+            }
+            .header p {
+                margin: 3px 0;
+                font-size: 12px;
+            }
         }
 
         /* 2. Masonry 瀑布流布局 (CSS Columns 实现) */
@@ -36,10 +55,8 @@
         @media (max-width: 768px) {
             .gallery-grid {
                 column-count: 2; /* 移动端改为两列 */
-                column-gap: 10px; /* 减小列间距 */
-            }
-            body {
-                padding: 15px 5px; /* 减小页面内边距，给图片更多空间 */
+                column-gap: 4px; /* 最小化列间距 */
+                padding: 0; /* 移动端去除gallery-grid的padding */
             }
         }
 
@@ -58,6 +75,18 @@
         .image-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        @media (max-width: 768px) {
+            .image-card {
+                border-radius: 4px; /* 移动端减小圆角 */
+                border: none; /* 移动端去除边框 */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 减小阴影 */
+                margin-bottom: 2px; /* 最小化卡片间距 */
+                padding: 2px; /* 最小化卡片内边距 */
+            }
+            .image-card:hover {
+                transform: none; /* 移动端取消悬停效果 */
+            }
         }
 
         /* 4. 图片容器与图片 */
@@ -80,6 +109,19 @@
             opacity: 0.95;
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
         }
+        @media (max-width: 768px) {
+            .image-container {
+                gap: 0;
+                margin-bottom: 0;
+            }
+            .image-container img {
+                border-radius: 0;
+                border: none;
+            }
+            .image-container img:hover {
+                box-shadow: none;
+            }
+        }
 
         /* 5. 提示词显示优化 (无需滚动条) */
         .prompt-display {
@@ -97,6 +139,21 @@
             font-size: 13px; /* 保持一致 */
             background: none;
             border: none;
+        }
+        @media (max-width: 768px) {
+            .prompt-display {
+                font-size: 12px;
+                padding: 8px;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+                margin-top: 4px;
+            }
+            .prompt-display pre {
+                font-size: 11px;
+                margin: 2px 0 0 0;
+                max-height: 100px;
+                overflow-y: auto;
+            }
         }
         .prompt-display strong {
             color: #495057;
@@ -131,9 +188,37 @@
         .prompt-display {
             cursor: pointer;
             transition: background-color 0.2s;
+            position: relative;
         }
         .prompt-display:hover {
             background-color: #f8f9fa;
+        }
+        .prompt-display::after {
+            content: '点击复制';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .prompt-display:hover::after {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .prompt-display::after {
+                content: '📋 点击复制';
+                font-size: 10px;
+                opacity: 0.7;
+                position: static;
+                display: inline-block;
+                margin-left: 5px;
+            }
         }
 
         /* 8. 放大图片模态框 */
