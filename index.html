@@ -83,6 +83,7 @@
 
         /* 5. 提示词显示优化 (无需滚动条) */
         .prompt-display {
+            position: relative; /* 为绝对定位的提示信息提供参考 */
             padding: 10px 5px 0 5px;
             font-size: 13px; /* 减小字体以容纳更多内容 */
             color: #5a6268;
@@ -101,23 +102,29 @@
             color: #495057;
         }
         
-        /* 6. 复制提示信息 */
+        /* 6. 复制提示信息 - 全局顶部悬浮 */
         .copy-info {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #007bff; /* 蓝色提示背景 */
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8); /* 深色背景 */
             color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 15px;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out, transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             pointer-events: none;
-            z-index: 10;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .copy-info.show {
             opacity: 1;
+            transform: translateX(-50%) translateY(10px);
         }
 
         /* 7. 提示词可点击样式 */
@@ -209,6 +216,8 @@
     </style>
 </head>
 <body>
+    <!-- 全局复制提示 Toast -->
+    <div id="global-toast" class="copy-info">✅ 已复制提示词!</div>
 
     <div class="header">
         <h1>✨ Nanobanana Pro 图片画廊</h1>
@@ -357,10 +366,9 @@
 
                 const cardHtml = `
                     <div class="image-container" data-prompt="${escapeHtml(item.prompt)}">
-                        <div id="${copyInfoId}" class="copy-info">✅ 已复制提示词!</div>
                         ${imagesHtml}
                     </div>
-                    <div class="prompt-display" onclick="copyPromptFromDisplay(this, '${copyInfoId}')">
+                    <div class="prompt-display" onclick="copyPromptFromDisplay(this)">
                         <strong>Prompt:</strong>
                         <pre>${escapeHtml(item.prompt)}</pre>
                     </div>
@@ -372,47 +380,34 @@
         }
 
         /**
-         * 复制提示词到剪贴板并显示通知
-         * @param {HTMLElement} imageElement - 被点击的图片元素
-         * @param {string} copyInfoId - 对应提示信息元素的 ID
+         * 显示全局 Toast 提示
          */
-        function copyPrompt(imageElement, copyInfoId) {
-            // 查找最近的 .image-card，然后在其内部查找 .image-container 来获取 data-prompt
-            const card = imageElement.closest('.image-card');
-            const prompt = card.querySelector('.image-container').getAttribute('data-prompt');
-            const copyInfoElement = document.getElementById(copyInfoId);
+            function showToast (message) {
+                const toast = document.getElementById('global-toast');
+                if (!toast) return;
 
-            navigator.clipboard.writeText(prompt)
-                .then(() => {
-                    // 显示复制成功的提示
-                    copyInfoElement.classList.add('show');
-                    // 确保在 1.5 秒后隐藏
-                    setTimeout(() => {
-                        copyInfoElement.classList.remove('show');
-                    }, 1500);
-                })
-                .catch(err => {
-                    console.error('复制失败:', err);
-                    alert('复制提示词失败，请手动复制：\n' + prompt);
-                });
+                toast.textContent = message;
+                toast.classList.add('show');
+
+                // 清除之前的定时器（防止快速点击时闪烁）
+                if (toast.timeoutId) clearTimeout(toast.timeoutId);
+        
+            toast.timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
         }
         
         /**
          * 从提示词显示区域复制提示词
          * @param {HTMLElement} promptElement - 被点击的提示词元素
-         * @param {string} copyInfoId - 对应提示信息元素的 ID
          */
-        function copyPromptFromDisplay(promptElement, copyInfoId) {
+            function copyPromptFromDisplay (promptElement) {
             const card = promptElement.closest('.image-card');
             const prompt = card.querySelector('.image-container').getAttribute('data-prompt');
-            const copyInfoElement = document.getElementById(copyInfoId);
 
             navigator.clipboard.writeText(prompt)
                 .then(() => {
-                    copyInfoElement.classList.add('show');
-                    setTimeout(() => {
-                        copyInfoElement.classList.remove('show');
-                    }, 1500);
+                    showToast('✅ 已复制提示词!');
                 })
                 .catch(err => {
                     console.error('复制失败:', err);
