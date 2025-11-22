@@ -193,33 +193,6 @@
         .prompt-display:hover {
             background-color: #f8f9fa;
         }
-        .prompt-display::after {
-            content: '点击复制';
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #667eea;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-        }
-        .prompt-display:hover::after {
-            opacity: 1;
-        }
-        @media (max-width: 768px) {
-            .prompt-display::after {
-                content: '📋 点击复制';
-                font-size: 10px;
-                opacity: 0.7;
-                position: static;
-                display: inline-block;
-                margin-left: 5px;
-            }
-        }
 
         /* 8. 放大图片模态框 */
         .modal {
@@ -306,7 +279,7 @@
 
     <div class="header">
         <h1>✨ Nanobanana Pro 图片画廊</h1>
-        <p>点击任意图片即可复制完整的 **提示词 (Prompt)**。</p>
+        <p>点击Prompt即可复制完整的 **提示词 (Prompt)**。</p>
         
         <div class="filter-container">
             <label for="source-select">选择展示源：</label>
