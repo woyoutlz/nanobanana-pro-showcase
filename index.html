@@ -115,6 +115,68 @@
         .copy-info.show {
             opacity: 1;
         }
+
+        /* 7. 提示词可点击样式 */
+        .prompt-display {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .prompt-display:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* 8. 放大图片模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s;
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+            animation: zoomIn 0.3s;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .modal-close:hover {
+            color: #ff6b6b;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -125,7 +187,15 @@
     </div>
 
     <div class="gallery-grid" id="gallery-grid">
+    </div>
+
+    <!-- 图片放大模态框 -->
+    <div id="imageModal" class="modal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <img id="modalImage" src="" alt="放大图片">
         </div>
+    </div>
 
     <script>
         // 配置：在此数组中添加您要加载的所有 JSON 文件名
@@ -208,7 +278,7 @@
                 const imagesHtml = item.imageurls.map(url => `
                     <img src="${escapeHtml(url)}" 
                          alt="AI Generated Image" 
-                         onclick="copyPrompt(this, '${copyInfoId}')">
+                         onclick="showModal(this)">
                 `).join('');
 
                 const cardHtml = `
@@ -216,7 +286,7 @@
                         <div id="${copyInfoId}" class="copy-info">✅ 已复制提示词!</div>
                         ${imagesHtml}
                     </div>
-                    <div class="prompt-display">
+                    <div class="prompt-display" onclick="copyPromptFromDisplay(this, '${copyInfoId}')">
                         <strong>Prompt:</strong>
                         <pre>${escapeHtml(item.prompt)}</pre>
                     </div>
@@ -254,6 +324,48 @@
         }
         
         /**
+         * 从提示词显示区域复制提示词
+         * @param {HTMLElement} promptElement - 被点击的提示词元素
+         * @param {string} copyInfoId - 对应提示信息元素的 ID
+         */
+        function copyPromptFromDisplay(promptElement, copyInfoId) {
+            const card = promptElement.closest('.image-card');
+            const prompt = card.querySelector('.image-container').getAttribute('data-prompt');
+            const copyInfoElement = document.getElementById(copyInfoId);
+
+            navigator.clipboard.writeText(prompt)
+                .then(() => {
+                    copyInfoElement.classList.add('show');
+                    setTimeout(() => {
+                        copyInfoElement.classList.remove('show');
+                    }, 1500);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    alert('复制提示词失败，请手动复制：\n' + prompt);
+                });
+        }
+
+        /**
+         * 显示放大的图片模态框
+         * @param {HTMLElement} imgElement - 被点击的图片元素
+         */
+        function showModal(imgElement) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modalImg.src = imgElement.src;
+            modal.classList.add('show');
+        }
+
+        /**
+         * 关闭模态框
+         */
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('show');
+        }
+        
+        /**
          * HTML转义函数，防止XSS和属性值错误
          * @param {string} str - 待转义的字符串
          * @returns {string} 转义后的字符串
@@ -267,6 +379,6 @@
                       .replace(/'/g, '&#039;');
         }
     </script>
-
+  <script src="show.js"></script>
 </body>
 </html>
