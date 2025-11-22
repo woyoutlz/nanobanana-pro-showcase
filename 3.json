@@ -1,0 +1,74 @@
+[
+  {
+    "prompt": "Two combined reference images where the content of the first image has been redrawn to fill the aspect ratio of the second, with the original content of the second image cleared and only its aspect ratio preserved.",
+    "imageurls": [
+      "https://github.com/muset-ai/awesome-nano-banana-pro/raw/main/cases/69/case.webp",
+      "https://github.com/muset-ai/awesome-nano-banana-pro/raw/main/cases/69/input1.webp",
+      "https://github.com/muset-ai/awesome-nano-banana-pro/raw/main/cases/69/input2.webp"
+    ]
+  },
+  {
+    "prompt": "write the answers to the questions in pencil. show your work",
+    "imageurls": [
+      "https://replicate.delivery/pbxt/O62F2khEeTOSXTr66pe5uy3h96JvT1YYRzGEerhhXpDj7bex/Screenshot%202025-11-20%20at%2012.34.27%E2%80%AFPM.png",
+      "https://replicate.delivery/xezq/eFzTXehKpBkHhkPXmllVy7CFwSmZncN85f0j23dE7M6h0iWrA/tmpac2m5l8_.png"
+    ]
+  },
+  {
+    "prompt": "summary images from long pieces of information like papers or websites (educational infographics)",
+    "imageurls": [
+      "https://replicate.delivery/xezq/krsYigCheMzEDqAfGHrP1FfeqF2Aac0gVZpCTo0Mu5BV4jtWB/tmpq2aoez2e.jpeg",
+      "https://replicate.delivery/xezq/6iJDEyFjCDqwAxu9vhFQfC4g7p3FPgf023QV7T5IY3T28YrVA/tmpftzkgbmk.jpeg",
+      "https://replicate.delivery/xezq/bfBcqCEY0LV1EKluQDaoBWJB0LeJAyTqgFJeoxgPOmsGAyWrA/tmpqew_wrd4.jpeg",
+      "https://replicate.delivery/xezq/MLa16nP6yjqZFtGuyQeLYQeLYdPSyesdTkvq1DlFjcMisInB9arVA/tmp8crm009c.jpeg"
+    ]
+  },
+  {
+    "prompt": "render this: /** * @license * SPDX-License-Identifier: Apache-2.0 */ import React, useRef, useEffect from ‘react’; import useAppContext from ’../context/AppContext’; // A simple full-screen quad vertex shader const VERTEX_SHADER = #version 300 es in vec2 a_position; out vec2 v_uv; void main() v_uv = a_position; gl_Position = vec4(a_position, 0.0, 1.0); const FRAGMENT_SHADER = version 300 es precision highp float; in vec2 v_uv; out vec4 outColor… (Render a ship from React and WebGL shader code)",
+    "imageurls": [
+      "https://replicate.delivery/xezq/0P5gHVWjTtLSEdd8KHla8eqWe9AD3VLQztpEVLY8GGWVwjrVA/tmpld7wvp79.jpeg"
+    ]
+  },
+  {
+    "prompt": "Machine Learning posters with various styles/designs and accurate text adherence",
+    "imageurls": [
+      "https://replicate.delivery/xezq/ie8i6SwX6lx1TC82bXiFaVNACMRmDWHDA4nwPBcb5CTmis1KA/tmp2zrgdvkr.jpeg",
+      "https://replicate.delivery/xezq/yoQygdtzhfSTaiklDy9GxFegQOe9W6fm5bdefbfheiL3uvbrVA/tmplss1lqi3.jpeg",
+      "https://replicate.delivery/xezq/NbF3IRHpEhYkEZMB8mM7oithI1MgqGkNebq1auDotoo9ls1KA/tmp01rfum4l.jpeg",
+      "https://replicate.delivery/xezq/b1hC7YxKGEo3DRJbfmrblxsJuuukDws1emavwbsF8HahLZrVA/tmpgxfhnuuv.jpeg"
+    ]
+  },
+  {
+    "prompt": "Make him [insert scenario here]. Keep his whiteboard style, but make the surroundings realistic. (Character out of context example)",
+    "imageurls": [
+      "https://replicate.delivery/xezq/bbKFcwKYaB5mKNG6vppNP8f24RehE3xSBVQWMebjUlPCxGXrA/tmpo6ue7_nv.jpeg",
+      "https://replicate.delivery/xezq/FEg1kwy3AOLABZknMUJN7BhSzame99i0SvbRdkflZwcddjrVA/tmp8zqn5ztu.jpeg",
+      "https://replicate.delivery/xezq/kPtlGa8wS8aYLdjPhhiq0ETd5fUPwQHGyaIFkukB1TwRwx1KA/tmpy1j2u3rr.jpeg"
+    ]
+  },
+  {
+    "prompt": "Change aspect ratio to 1:1 by reducing background. The character remains exactly locked in its current position. (Character consistency across different scenes/zoom levels)",
+    "imageurls": [
+      "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/WM-Aspect-Ratio.max-1226x1226.format-webp.webp"
+    ]
+  },
+  {
+    "prompt": "making comics of the weather in different places around the world (New York, Cape Town, Seoul)",
+    "imageurls": [
+      "https://replicate.delivery/xezq/r4VkNkCmdG6aB9Lk7PvGkwjjIue99101TaINceCbMSOA1krVA/tmpesi7smjq.jpeg",
+      "https://replicate.delivery/xezq/C33EAMqdycLiMtmUe7tBv9pvFvizFpYU03fFLksGdwf9rJXrA/tmp6di0jlvc.jpeg",
+      "https://replicate.delivery/xezq/mzMYf2Z8zAVVDyEdaxRk2x0DFWfpmWiWYSxNxefWJZbaXTuWB/tmp2ga4uvlc.jpeg"
+    ]
+  },
+  {
+    "prompt": "a morning shot of San Francisco and at the same time, a night shot in New Delhi (real-time snapshots experiment)",
+    "imageurls": [
+      "https://replicate.delivery/xezq/3Ff1KnIiO7QnEqXNWl49kW99pKOEM4un2RzjlkHe8ygQrkrVA/tmpz7zirqh7.jpeg",
+      "https://replicate.delivery/xezq/nZbWnng2rvYwBp2WvmYFpxR4QSrHvBr7WCgVSfakQNebgkrVA/tmpk9b043ib.jpeg"
+    ]
+  },
+  {
+    "prompt": "deduce world landmarks just given their coordinates",
+    "imageurls": [""]
+  }
+]
